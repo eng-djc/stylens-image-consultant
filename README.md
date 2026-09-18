@@ -1,6 +1,6 @@
 # StyLens
 
-StyLens is a human-centered multimodal AI assistant that helps professional image consultants create structured, explainable, and personalized recommendations.
+**StyLens** is a human-centered multimodal AI assistant that helps professional image consultants create structured, explainable, and personalized recommendations.
 
 ## Scope
 
@@ -111,7 +111,10 @@ Versions below are the implementation baseline and will be pinned in dependency 
 
 ## Status
 
-StyLens is currently in requirements and architecture validation for the Microsoft Global Hackathon. The architecture has been selected; models and deployment providers still require quantitative acceptance testing.
+StyLens now includes an executable FastAPI MVP foundation with consultation sessions,
+explicit adult consent, validated JPEG/PNG/WebP uploads, ephemeral in-memory storage,
+and secure session deletion. Models and deployment providers still require quantitative
+acceptance testing before integration.
 
 ## License
 

@@ -42,7 +42,7 @@ Legal review.
 | SEC-03 | Images shall remain isolated by pseudonymous session identifier. | Cross-session access tests return no artifact or metadata from another session. |
 | SEC-04 | Candidate providers shall be assessed before integration. | Evaluation records retention, training use, processing location, storage location, subprocessors, deletion behavior, license, latency, and cost for every provider. |
 | SEC-05 | Components and content shall have compatible licenses and usage rights. | 100% of models, datasets, libraries, images, and knowledge sources have a recorded license and permitted-use decision. |
-| SEC-06 | Real-person processing shall remain disabled until governance reviews approve it. | The production configuration defaults to synthetic-only mode, and changing it requires a documented review decision plus a code change reviewed by an authorized maintainer. |
+| SEC-06 | Real-person processing shall remain disabled until governance reviews approve it. | Version 1 contains no configuration switch that enables real-person data; changing this boundary requires a documented review decision and a reviewed code change. |
 
 ## Geographic and governance constraint
 

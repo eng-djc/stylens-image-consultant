@@ -23,6 +23,12 @@ def _jpeg_with_exif() -> bytes:
     return output.getvalue()
 
 
+def _oversized_pixel_image() -> bytes:
+    output = BytesIO()
+    Image.new("RGB", (4097, 4097), color=(1, 1, 1)).save(output, format="PNG")
+    return output.getvalue()
+
+
 def test_consultation_flow_requires_consent_and_deletes_session() -> None:
     get_consultation_service.cache_clear()
     with TestClient(app) as client:
@@ -126,3 +132,21 @@ def test_upload_reencoding_removes_exif_metadata() -> None:
         stored = bytes(service._artifacts._images[session_id])
         with Image.open(BytesIO(stored)) as sanitized:
             assert len(sanitized.getexif()) == 0
+
+
+def test_rejects_image_exceeding_decoded_pixel_limit() -> None:
+    get_consultation_service.cache_clear()
+    with TestClient(app) as client:
+        session_id = client.post("/api/v1/sessions").json()["session_id"]
+        client.post(
+            f"/api/v1/sessions/{session_id}/consent",
+            json={"notice_version": "1.0", "accepted": True, "adult_confirmed": True},
+        )
+        response = client.post(
+            f"/api/v1/sessions/{session_id}/image",
+            data={"synthetic_confirmed": "true"},
+            files={"image": ("large.png", _oversized_pixel_image(), "image/png")},
+        )
+
+        assert response.status_code == 422
+        assert "pixel limit" in response.json()["detail"]

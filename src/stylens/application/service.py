@@ -25,12 +25,12 @@ class ConsultationService:
         artifacts: ArtifactStore,
         *,
         max_upload_bytes: int,
-        synthetic_data_only: bool,
+        max_image_pixels: int,
     ) -> None:
         self._sessions = sessions
         self._artifacts = artifacts
         self.max_upload_bytes = max_upload_bytes
-        self._synthetic_data_only = synthetic_data_only
+        self._max_image_pixels = max_image_pixels
 
     async def create_session(self) -> ConsultationSession:
         session = ConsultationSession()
@@ -62,7 +62,7 @@ class ConsultationService:
         session = await self.get_session(session_id)
         if session.consent is None:
             raise ConsentRequiredError("Consent is required before image upload.")
-        if self._synthetic_data_only and not synthetic_confirmed:
+        if not synthetic_confirmed:
             raise PrototypeDataPolicyError(
                 "The hackathon prototype accepts synthetic people only."
             )
@@ -87,6 +87,8 @@ class ConsultationService:
             raise InvalidImageError("Declared and detected image types do not match.")
         if width < 1024 or height < 1024:
             raise InvalidImageError("Image dimensions must be at least 1024 x 1024 pixels.")
+        if width * height > self._max_image_pixels:
+            raise InvalidImageError("Decoded image exceeds the configured pixel limit.")
 
         sanitized_output = BytesIO()
         if image_format == "JPEG":

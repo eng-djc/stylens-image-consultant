@@ -14,4 +14,5 @@ def get_consultation_service() -> ConsultationService:
         InMemorySessionRepository(),
         InMemoryArtifactStore(),
         max_upload_bytes=settings.max_upload_mb * 1024 * 1024,
+        synthetic_data_only=settings.synthetic_data_only,
     )

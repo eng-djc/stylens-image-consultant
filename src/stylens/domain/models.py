@@ -32,6 +32,7 @@ class ImageAsset(BaseModel):
     height: int = Field(ge=1024)
     size_bytes: int = Field(gt=0)
     sha256: str = Field(pattern=r"^[a-f0-9]{64}$")
+    source_classification: str = Field(pattern=r"^synthetic$")
 
 
 class ConsultationSession(BaseModel):

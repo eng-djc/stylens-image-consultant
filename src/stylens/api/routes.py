@@ -3,12 +3,22 @@
 from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, File, HTTPException, Response, UploadFile, status
+from fastapi import (
+    APIRouter,
+    Depends,
+    File,
+    Form,
+    HTTPException,
+    Response,
+    UploadFile,
+    status,
+)
 from pydantic import BaseModel
 
 from stylens.application.exceptions import (
     ConsentRequiredError,
     InvalidImageError,
+    PrototypeDataPolicyError,
     SessionNotFoundError,
 )
 from stylens.application.service import ConsultationService
@@ -59,13 +69,23 @@ async def upload_image(
     session_id: UUID,
     service: Service,
     image: Annotated[UploadFile, File(description="Consenting adult consultation image")],
+    synthetic_confirmed: Annotated[
+        bool, Form(description="Confirms the person and profile are synthetic")
+    ],
 ) -> ConsultationSession:
     try:
         content = await image.read(service.max_upload_bytes + 1)
-        return await service.upload_image(session_id, content, image.content_type)
+        return await service.upload_image(
+            session_id,
+            content,
+            image.content_type,
+            synthetic_confirmed=synthetic_confirmed,
+        )
     except SessionNotFoundError as error:
         raise HTTPException(status_code=404, detail="Session not found.") from error
     except ConsentRequiredError as error:
+        raise HTTPException(status_code=403, detail=str(error)) from error
+    except PrototypeDataPolicyError as error:
         raise HTTPException(status_code=403, detail=str(error)) from error
     except InvalidImageError as error:
         raise HTTPException(status_code=422, detail=str(error)) from error

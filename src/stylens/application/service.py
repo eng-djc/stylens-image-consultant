@@ -9,6 +9,7 @@ from PIL import Image, UnidentifiedImageError
 from stylens.application.exceptions import (
     ConsentRequiredError,
     InvalidImageError,
+    PrototypeDataPolicyError,
     SessionNotFoundError,
 )
 from stylens.domain.models import ConsentRecord, ConsultationSession, ImageAsset
@@ -24,10 +25,12 @@ class ConsultationService:
         artifacts: ArtifactStore,
         *,
         max_upload_bytes: int,
+        synthetic_data_only: bool,
     ) -> None:
         self._sessions = sessions
         self._artifacts = artifacts
         self.max_upload_bytes = max_upload_bytes
+        self._synthetic_data_only = synthetic_data_only
 
     async def create_session(self) -> ConsultationSession:
         session = ConsultationSession()
@@ -49,11 +52,20 @@ class ConsultationService:
         return session
 
     async def upload_image(
-        self, session_id: UUID, content: bytes, declared_media_type: str | None
+        self,
+        session_id: UUID,
+        content: bytes,
+        declared_media_type: str | None,
+        *,
+        synthetic_confirmed: bool,
     ) -> ConsultationSession:
         session = await self.get_session(session_id)
         if session.consent is None:
             raise ConsentRequiredError("Consent is required before image upload.")
+        if self._synthetic_data_only and not synthetic_confirmed:
+            raise PrototypeDataPolicyError(
+                "The hackathon prototype accepts synthetic people only."
+            )
         if not content or len(content) > self.max_upload_bytes:
             raise InvalidImageError("Image must be non-empty and within the configured size limit.")
 
@@ -92,6 +104,7 @@ class ConsultationService:
             height=height,
             size_bytes=len(sanitized_content),
             sha256=sha256(sanitized_content).hexdigest(),
+            source_classification="synthetic",
         )
         await self._artifacts.save_image(
             session_id=str(session_id), content=sanitized_content

@@ -12,3 +12,6 @@ class ConsentRequiredError(PermissionError):
 class InvalidImageError(ValueError):
     pass
 
+
+class PrototypeDataPolicyError(PermissionError):
+    pass

@@ -6,6 +6,10 @@ StyLens helps a professional image consultant analyze authorized client photogra
 
 StyLens supports professional judgment. It does not replace the consultant.
 
+The hackathon prototype accepts only synthetic people and fictional profiles.
+Do not upload photographs, measurements, preferences, or assessments belonging
+to a real person.
+
 ## 2. User roles
 
 ### Client
@@ -171,6 +175,7 @@ Only sections implemented and professionally validated for the MVP should be inc
 ## 5. Safe-use rules
 
 - Process only authorized photographs.
+- Use only synthetic people and fictional profiles in the hackathon prototype.
 - Do not process minors in the MVP.
 - Do not upload customer or confidential data during development tests.
 - Do not use StyLens for identity verification.

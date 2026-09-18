@@ -1,6 +1,6 @@
 # StyLens
 
-StyLens is a human-centered multimodal AI assistant that helps professional image consultants create structured, explainable, and personalized recommendations.
+**StyLens** is a human-centered multimodal AI assistant that helps professional image consultants create structured, explainable, and personalized recommendations.
 
 ## Scope
 
@@ -19,7 +19,14 @@ The system produces structured observations, confidence indicators, recommendati
 
 The first vertical slice will support one consenting adult, one consultation session, validated photographs, structured consultant input, one complete analysis path, one controlled garment visualization, consultant approval, PDF generation, and secure deletion.
 
-Training or fine-tuning, minors, multiple people, body transformation, unrestricted person regeneration, video, and long-term client storage are outside the MVP.
+For the controlled hackathon prototype, the person and profile must be synthetic.
+Real participant photographs, measurements, preferences, and assessments are not
+accepted until formal Privacy, Security, Responsible AI, and Legal reviews approve
+an expanded scope.
+
+Training or fine-tuning, real participant data, minors, multiple people, body
+transformation, unrestricted person regeneration, video, biometric identification,
+and long-term client storage are outside the MVP.
 
 ## Human-in-the-Loop Design
 
@@ -111,7 +118,10 @@ Versions below are the implementation baseline and will be pinned in dependency 
 
 ## Status
 
-StyLens is currently in requirements and architecture validation for the Microsoft Global Hackathon. The architecture has been selected; models and deployment providers still require quantitative acceptance testing.
+StyLens now includes an executable FastAPI MVP foundation with consultation sessions,
+explicit adult consent, validated JPEG/PNG/WebP uploads, ephemeral in-memory storage,
+and secure session deletion. Models and deployment providers still require quantitative
+acceptance testing before integration.
 
 ## License
 

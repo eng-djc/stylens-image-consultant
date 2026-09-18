@@ -2,7 +2,7 @@
 
 ## 1. Purpose
 
-This manual defines the planned installation profiles and environment baseline for StyLens. The repository is currently in the requirements and architecture stage; executable installation commands will become active when the application source, dependency lock file, and environment template are committed.
+This manual defines the installation profiles and environment baseline for the StyLens MVP.
 
 ## 2. Choose a deployment profile
 
@@ -57,9 +57,7 @@ Recommended baseline:
 
 Exact GPU, CUDA, PyTorch, and model versions will be pinned after the technical spike.
 
-## 3. Planned repository setup
-
-When the application code is available, installation will follow this structure:
+## 3. Repository setup
 
 ```bash
 git clone https://github.com/eng-djc/stylens-image-consultant.git
@@ -68,7 +66,7 @@ cd stylens-image-consultant
 python3.12 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
+python -m pip install -e ".[dev]"
 ```
 
 Windows PowerShell activation:
@@ -77,9 +75,13 @@ Windows PowerShell activation:
 .venv\Scripts\Activate.ps1
 ```
 
-Do not run the final `pip install` command until `requirements.txt` exists in the repository.
+Copy the environment template before starting the service:
 
-## 4. Planned configuration
+```bash
+cp .env.example .env
+```
+
+## 4. Configuration
 
 Runtime configuration will use environment variables loaded from a local file excluded from Git.
 
@@ -104,9 +106,9 @@ Rules:
 - grant the minimum required permissions; and
 - verify provider retention and training settings before processing real images.
 
-## 5. Planned application start
+## 5. Application start
 
-The development service is expected to use:
+Start the development service with:
 
 ```bash
 uvicorn stylens.main:app --host 127.0.0.1 --port 8000 --reload
@@ -167,4 +169,7 @@ Confirm that it is JPEG, PNG, or WebP; is no larger than 15 MB; has at least 102
 
 ## 9. Current limitation
 
-This manual describes the approved installation design. It must be updated with verified commands, hashes, ports, environment variables, and platform-specific tests when the first executable release is committed.
+The current MVP stores sessions and image bytes only in process memory. Restarting
+the service deletes them. Use synthetic test images only until authentication,
+encrypted persistent storage, automatic expiration, and deployment controls are
+implemented and security-reviewed.
